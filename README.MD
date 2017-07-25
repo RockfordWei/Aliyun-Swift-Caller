@@ -26,11 +26,11 @@ Register & Log on to the console of Alibaba Cloud at [https://intl.aliyun.com/](
 
 Click Home -> (Monitor & Management) Resource Access Management until you see a RAM dashboard:
 
-<p><img src='ram.png'></img></p>
+<p><img src='https://github.com/RockfordWei/Aliyun-CLI-Deployment-Guide/blob/master/ram.png?raw=true'></img></p>
 
 Create a new group and authorize its police to ECS full access, then click the user that just created.
 
-<p><img src='user.png'></img></p>
+<p><img src='https://github.com/RockfordWei/Aliyun-CLI-Deployment-Guide/blob/master/user.png?raw=true'></img></p>
 
 Click "Create AccessKey", then save it.
 
