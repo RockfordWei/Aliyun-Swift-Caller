@@ -19,7 +19,6 @@ func SyncExec(_ timeout: Int = 5, command: @escaping (UnsafeMutablePointer<Bool>
 
 class AliyunTests: XCTestCase {
 
-  let testKeyName = "alikeytest"
   func testAliyun() {
     let hidden = File(Aliyun.ConfigPath)
     if hidden.exists {
@@ -99,11 +98,12 @@ class AliyunTests: XCTestCase {
       }
     }
 
+    let keyName = String.init(format: "key%02x", time(nil))
     SyncExec { pLock in
       if let a = try? Aliyun() {
         do {
 
-          try a.createKeyPair(keyName: self.testKeyName, pathToSave: "HOME".sysEnv + "/.ssh") { success, path in
+          try a.createKeyPair(keyName: keyName, pathToSave: "HOME".sysEnv + "/.ssh") { success, path in
             XCTAssertTrue(success)
             pLock.pointee = false
             let f = File(path)
@@ -120,6 +120,19 @@ class AliyunTests: XCTestCase {
           }
         }catch {
           XCTFail("\(error.localizedDescription)")
+        }
+      }
+    }
+    SyncExec { pLock in
+      if let a = try? Aliyun() {
+        do {
+          try a.deleteKeyPair(keyName: keyName) { success, message in
+            pLock.pointee = false
+            XCTAssertTrue(success)
+            print(message)
+          }
+        }catch {
+          XCTFail(error.localizedDescription)
         }
       }
     }

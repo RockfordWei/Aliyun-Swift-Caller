@@ -47,7 +47,7 @@ public class Aliyun {
   }
 
   public func loadInstanceTypes(completion: @escaping (Bool, String) -> Void) throws {
-    let params = ["run", "-v", Aliyun.ConfigMapping, "-e", "PWD=/root", "-e", "HOME=/root", Aliyun.dockerImage, "aliyuncli", "ecs", "DescribeImageSupportInstanceTypes", "--secure", "--ImageId", "ubuntu_16_0402_64_40G_base_20170222.vhd"]
+    let params = ["run", "-v", Aliyun.ConfigMapping, "-e", "HOME=/root", Aliyun.dockerImage, "aliyuncli", "ecs", "DescribeImageSupportInstanceTypes", "--secure", "--ImageId", "ubuntu_16_0402_64_40G_base_20170222.vhd"]
 
     try runProc("docker", args: params) { ret in
       guard let a = try? ret.jsonDecode() as? [String: Any],
@@ -113,7 +113,7 @@ public class Aliyun {
       completion(true, path)
       return
     }//end if
-    let params = ["run", "-v", Aliyun.ConfigMapping, "-e", "PWD=/root", "-e", "HOME=/root", Aliyun.dockerImage, "aliyuncli", "ecs", "CreateKeyPair", "--secure", "--KeyPairName", keyName ]
+    let params = ["run", "-v", Aliyun.ConfigMapping, "-e", "HOME=/root", Aliyun.dockerImage, "aliyuncli", "ecs", "CreateKeyPair", "--secure", "--KeyPairName", keyName ]
     try runProc("docker", args: params) { ret in
       do {
         guard let k = try ret.jsonDecode() as? [String: String],
@@ -136,6 +136,14 @@ public class Aliyun {
     }
   }
 
+  public func deleteKeyPair(keyName: String, completion: @escaping (Bool, String) -> Void) throws {
+    let name = "[\"\(keyName)\"]"
+    print(name)
+    let params = ["run", "-v", Aliyun.ConfigMapping, "-e", "HOME=/root", Aliyun.dockerImage, "aliyuncli", "ecs", "DeleteKeyPairs", "--secure", " --KeyPairNames", name ]
+    try runProc("docker", args: params) { ret in
+      completion(!ret.contains("Error"), ret)
+    }
+  }
   public static func DockerLogin(userName: String, password: String, completion: @escaping (Bool, String) -> Void) {
     let params = ["login", "-u", userName, "-p", password]
 
